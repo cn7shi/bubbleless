@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+exp_workspace/
+/tmp/
+*.mp4
+traces/
