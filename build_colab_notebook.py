@@ -28,28 +28,6 @@ def _code_cell(code: str) -> dict:
 
 def main() -> None:
     root = pathlib.Path(__file__).resolve().parent
-    pkg = root / "bubbleless"
-
-    files_to_embed = [
-        "bubbleless/__init__.py",
-        "bubbleless/profiler.py",
-        "bubbleless/scheduler.py",
-        "bubbleless/workload_t4.py",
-        "bubbleless/viz.py",
-        "run_phase1_exp.py",
-    ]
-
-    setup_files_code = [
-        "import pathlib\n",
-        "ROOT = pathlib.Path('/content/bubbleless')\n",
-        "(ROOT / 'bubbleless').mkdir(parents=True, exist_ok=True)\n\n",
-    ]
-    for rel in files_to_embed:
-        content = (root / rel).read_text(encoding="utf-8")
-        setup_files_code.append(
-            f"(ROOT / {rel!r}).write_text({content!r}, encoding='utf-8')\n"
-        )
-    setup_files_code.append("print('Bubbleless v0.1 source files written to /content/bubbleless!')\n")
 
     cells = [
         _md_cell(
@@ -71,8 +49,11 @@ def main() -> None:
             "!free -h\n"
             "!pip install -q diffusers transformers accelerate safetensors psutil pillow matplotlib\n"
         ),
-        _md_cell(["### Step 2：部署 Bubbleless v0.1 核心模块到 `/content/bubbleless`"]),
-        _code_cell("".join(setup_files_code)),
+        _md_cell(["### Step 2：从 GitHub 拉取最新 Bubbleless 代码"]),
+        _code_cell(
+            "!rm -rf /content/bubbleless\n"
+            "!git clone --depth 1 https://github.com/cn7shi/bubbleless.git /content/bubbleless\n"
+        ),
         _md_cell(
             [
                 "### Step 3：运行 A/B 对比实验（串行 Baseline vs 异步双缓冲 Overlap）",
